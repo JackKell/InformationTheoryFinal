@@ -1,5 +1,7 @@
 package util;
 
+import java.util.Arrays;
+import java.util.StringTokenizer;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BinaryMatrix {
@@ -13,7 +15,7 @@ public class BinaryMatrix {
 
     public BinaryMatrix(int rowSize, int columnSize, String binaryString) {
         if (binaryString.length() != rowSize * columnSize) {
-            throw new Error("The length of the given binary String must be of length columnSize * rowSize!");
+            throw new Error("The length of the given binary string must be of length columnSize * rowSize!");
         }
         this.columnSize = columnSize;
         this.rowSize = rowSize;
@@ -108,6 +110,53 @@ public class BinaryMatrix {
         return new BinaryMatrix(rowSize, otherBinaryMatrix.columnSize, newElements);
     }
 
+    public static BinaryMatrix multiply(BinaryMatrix bm1, BinaryMatrix bm2) {
+        return bm1.multiply(bm2);
+    }
+
+    public static String multiplyVector(BinaryMatrix binaryMatrix, String binaryVector) {
+        if (binaryMatrix.columnSize != binaryVector.length()) {
+            throw new Error("The given matrix is not equal to the size of the current matrix!");
+        }
+        String out = "";
+        for (int rowIndex = 0; rowIndex < binaryMatrix.rowSize; rowIndex++) {
+            int temp = 0;
+            for (int columnIndex = 0; columnIndex < binaryVector.length(); columnIndex++) {
+                temp += binaryMatrix.elements[rowIndex][columnIndex] * (int) binaryVector.charAt(columnIndex);
+            }
+            temp %= 2;
+            out += temp;
+        }
+        return out;
+    }
+
+    public static String multiplyVector(String binaryVector, BinaryMatrix binaryMatrix) {
+        if (binaryVector.length() != binaryMatrix.rowSize) {
+            throw new Error("The given matrix is not equal to the size of the current matrix!");
+        }
+        BinaryMatrix result = new BinaryMatrix(binaryVector).multiply(binaryMatrix);
+        result.print();
+        String out = "";
+        for (int columnIndex = 0; columnIndex < binaryMatrix.columnSize; columnIndex++) {
+            out += result.elements[0][columnIndex];
+        }
+        return out;
+    }
+
+    public boolean equals(BinaryMatrix otherBinaryMatrix) {
+        if (otherBinaryMatrix.columnSize != columnSize || otherBinaryMatrix.rowSize != rowSize) {
+            throw new Error("The given matrix is not equal to the size of the current matrix!");
+        }
+        for (int rowIndex = 0; rowIndex < rowSize; rowIndex++) {
+            for (int columnIndex = 0; columnIndex < columnSize; columnIndex++) {
+                if (elements[rowIndex][columnIndex] != otherBinaryMatrix.elements[rowIndex][columnIndex]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public BinaryMatrix concatenate(BinaryMatrix otherBinaryMatrix) {
         if (rowSize != otherBinaryMatrix.rowSize) {
             throw new Error("The given matrix is not equal to the size of the current matrix!");
@@ -135,7 +184,7 @@ public class BinaryMatrix {
         return new BinaryMatrix(columnSize, rowSize, newElements);
     }
 
-    static public BinaryMatrix identity(int size) {
+    public static BinaryMatrix identity(int size) {
         BinaryMatrix identityMatrix = new BinaryMatrix(size, size);
         for (int i = 0; i < size; i++) {
             identityMatrix.setElement(i, i, 1);
@@ -143,7 +192,7 @@ public class BinaryMatrix {
         return identityMatrix;
     }
 
-    static public BinaryMatrix randomMatrix(int rowSize, int columnSize) {
+    public static BinaryMatrix randomMatrix(int rowSize, int columnSize) {
         int[][] newElements = new int[rowSize][columnSize];
         for (int rowIndex = 0; rowIndex < rowSize; rowIndex++) {
             for (int columnIndex = 0; columnIndex < columnSize; columnIndex++) {
