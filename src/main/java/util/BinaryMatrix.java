@@ -1,7 +1,5 @@
 package util;
 
-import java.util.Arrays;
-import java.util.StringTokenizer;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BinaryMatrix {
@@ -196,7 +194,6 @@ public class BinaryMatrix {
         int[][] newElements = new int[rowSize][columnSize];
         for (int rowIndex = 0; rowIndex < rowSize; rowIndex++) {
             for (int columnIndex = 0; columnIndex < columnSize; columnIndex++) {
-                // noinspection Since15
                 newElements[rowIndex][columnIndex] = ThreadLocalRandom.current().nextInt(0, 2);
             }
         }
